@@ -219,7 +219,7 @@ async function load() {
     form.firstName = user.value.firstName ?? '';
     form.lastName = user.value.lastName ?? '';
     form.thirdName = user.value.thirdName ?? '';
-    assignedRoleSlugs.value = (user.value.roles ?? []).map((r) => r.role.slug);
+    assignedRoleSlugs.value = (user.value.roles ?? []).map((r) => r.slug);
   } catch (e: unknown) {
     loadError.value = e instanceof Error ? e.message : 'Не вдалося завантажити користувача';
   }
@@ -250,7 +250,7 @@ async function handleSubmit() {
         lastName: form.lastName,
         thirdName: form.thirdName || undefined,
       });
-      const currentOnServer = (user.value.roles ?? []).map((r) => r.role.slug);
+      const currentOnServer = (user.value.roles ?? []).map((r) => r.slug);
       const toAdd = assignedRoleSlugs.value.filter((slug) => !currentOnServer.includes(slug));
       const toRemove = currentOnServer.filter((slug) => !assignedRoleSlugs.value.includes(slug));
       for (const slug of toAdd) {

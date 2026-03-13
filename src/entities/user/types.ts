@@ -8,6 +8,5 @@ export interface User {
   thirdName?: string | null;
   createdAt: string;
   updatedAt: string;
-  /** При include з бекенду: roles: [{ role: Role }] */
-  roles?: { role: Role }[];
+  roles?: Role[];
 }

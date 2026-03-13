@@ -197,7 +197,7 @@ async function load() {
     role.value = await rolesStore.fetchOne(id);
     form.slug = role.value.slug;
     form.name = role.value.name;
-    assignedPermissionIds.value = (role.value.permissions ?? []).map((p) => p.permission.id);
+    assignedPermissionIds.value = (role.value.permissions ?? []).map((p) => p.id);
   } catch (e: unknown) {
     loadError.value = e instanceof Error ? e.message : 'Не вдалося завантажити роль';
   }
@@ -246,7 +246,7 @@ async function handleSubmit() {
         slug: form.slug,
         name: form.name,
       });
-      const currentOnServer = (role.value.permissions ?? []).map((p) => p.permission.id);
+      const currentOnServer = (role.value.permissions ?? []).map((p) => p.id);
       const toAdd = assignedPermissionIds.value.filter((id) => !currentOnServer.includes(id));
       const toRemove = currentOnServer.filter((id) => !assignedPermissionIds.value.includes(id));
       for (const id of toAdd) {

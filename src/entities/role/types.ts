@@ -6,6 +6,5 @@ export interface Role {
   name: string;
   createdAt: string;
   updatedAt: string;
-  /** При include з бекенду: permissions: [{ permission: Permission }] */
-  permissions?: { permission: Permission }[];
+  permissions?: Permission[];
 }
