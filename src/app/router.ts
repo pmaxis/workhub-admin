@@ -5,6 +5,8 @@ import { PERMISSIONS } from '@/shared/constants/permissions';
 import AppLayout from '@/widgets/layout/AppLayout.vue';
 
 const usersRouteNames = ['users', 'userCreate', 'userEdit'] as const;
+const rolesRouteNames = ['roles', 'roleCreate', 'roleEdit'] as const;
+const permissionsRouteNames = ['permissions', 'permissionCreate', 'permissionEdit'] as const;
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -112,7 +114,7 @@ router.beforeEach(async (to, _from, next) => {
       return;
     }
   }
-  // Доступ до розділу користувачів за пермішенами
+  // Доступ до розділів за пермішенами
   const name = to.name as string;
   if (isAuth && usersRouteNames.includes(name as (typeof usersRouteNames)[number])) {
     const { can } = usePermissions();
@@ -127,6 +129,35 @@ router.beforeEach(async (to, _from, next) => {
       return;
     }
   }
+
+  if (isAuth && rolesRouteNames.includes(name as (typeof rolesRouteNames)[number])) {
+    const { can } = usePermissions();
+    const allowed =
+      name === 'roles'
+        ? can(PERMISSIONS.ROLES_READ)
+        : name === 'roleCreate'
+          ? can(PERMISSIONS.ROLES_CREATE)
+          : can(PERMISSIONS.ROLES_UPDATE);
+    if (!allowed) {
+      next({ name: 'dashboard' });
+      return;
+    }
+  }
+
+  if (isAuth && permissionsRouteNames.includes(name as (typeof permissionsRouteNames)[number])) {
+    const { can } = usePermissions();
+    const allowed =
+      name === 'permissions'
+        ? can(PERMISSIONS.PERMISSIONS_READ)
+        : name === 'permissionCreate'
+          ? can(PERMISSIONS.PERMISSIONS_CREATE)
+          : can(PERMISSIONS.PERMISSIONS_UPDATE);
+    if (!allowed) {
+      next({ name: 'dashboard' });
+      return;
+    }
+  }
+
   next();
 });
 

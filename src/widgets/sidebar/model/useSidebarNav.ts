@@ -57,12 +57,35 @@ export function useSidebarNav() {
   const { can } = usePermissions();
 
   const navStructure = computed(() =>
-    navStructureRaw.filter((item) => {
-      if (item.type === 'link' && item.name === 'users') {
-        return can(PERMISSIONS.USERS_READ);
-      }
-      return true;
-    }),
+    navStructureRaw
+      .filter((item) => {
+        if (item.type === 'link' && item.name === 'users') {
+          return can(PERMISSIONS.USERS_READ);
+        }
+        if (item.type === 'group' && item.id === 'roles-permissions') {
+          const hasRoles = can(PERMISSIONS.ROLES_READ);
+          const hasPermissions = can(PERMISSIONS.PERMISSIONS_READ);
+          return hasRoles || hasPermissions;
+        }
+        return true;
+      })
+      .map((item) => {
+        if (item.type === 'group' && item.id === 'roles-permissions') {
+          return {
+            ...item,
+            children: item.children.filter((child) =>
+              child.name === 'roles'
+                ? can(PERMISSIONS.ROLES_READ)
+                : can(PERMISSIONS.PERMISSIONS_READ),
+            ),
+          };
+        }
+        return item;
+      })
+      .filter((item) => {
+        if (item.type === 'group' && item.children.length === 0) return false;
+        return true;
+      }),
   );
 
   const openFlyoutId = ref<string | null>(null);

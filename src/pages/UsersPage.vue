@@ -61,37 +61,27 @@
       </template>
     </div>
 
-    <div
-      v-if="deleteTarget"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-      @click.self="deleteTarget = null"
-    >
-      <div class="w-full max-w-sm rounded-xl border border-zinc-700 bg-zinc-900 p-6">
-        <p class="text-zinc-200">
-          Видалити користувача <strong>{{ deleteTarget.email }}</strong
-          >?
-        </p>
-        <div class="mt-4 flex justify-end gap-2">
-          <Button type="button" variant="ghost" size="sm" @click="deleteTarget = null"> Ні </Button>
-          <Button
-            type="button"
-            variant="danger"
-            size="sm"
-            :disabled="deleteLoading"
-            @click="handleDelete"
-          >
-            {{ deleteLoading ? '…' : 'Так, видалити' }}
-          </Button>
-        </div>
-      </div>
-    </div>
+    <ConfirmDeleteModal v-model="deleteTarget" :loading="deleteLoading" @confirm="handleDelete">
+      <template #message>
+        Видалити користувача <strong>{{ deleteTarget?.email }}</strong>?
+      </template>
+    </ConfirmDeleteModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import { Button, ErrorMessage, Table, TableTh, TableTd, Dropdown, DropdownItem } from '@/shared/ui';
+import {
+  Button,
+  ErrorMessage,
+  Table,
+  TableTh,
+  TableTd,
+  Dropdown,
+  DropdownItem,
+  ConfirmDeleteModal,
+} from '@/shared/ui';
 import { useUsersStore } from '@/features/users';
 import { usePermissions } from '@/shared/composables/usePermissions';
 import { PERMISSIONS } from '@/shared/constants/permissions';
