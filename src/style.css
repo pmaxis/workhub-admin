@@ -61,6 +61,7 @@ body.theme-light .workhub-btn.text-zinc-300,
 body.theme-light .workhub-btn.text-zinc-400 {
   @apply text-zinc-800;
 }
+body.theme-light .workhub-btn.text-red-300,
 body.theme-light .workhub-btn.text-red-400 {
   @apply text-red-700;
 }

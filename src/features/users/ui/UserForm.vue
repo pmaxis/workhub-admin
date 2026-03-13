@@ -74,17 +74,17 @@
         <FormField label="Ролі" field-id="user-roles" size="sm">
           <div class="relative" ref="rolesDropdownRef">
             <div
-              class="min-h-10 w-full flex flex-wrap items-center gap-2 rounded-lg border border-zinc-600 bg-zinc-800 px-3 py-2 text-sm text-zinc-100"
+              class="workhub-multiselect-box min-h-10 w-full flex flex-wrap items-center gap-2 rounded-lg border border-zinc-600 bg-zinc-800 px-3 py-2 text-sm text-zinc-100"
             >
               <span
                 v-for="r in selectedRolesList"
                 :key="r.slug"
-                class="inline-flex items-center gap-1.5 rounded-md bg-amber-500/20 pl-2 pr-1 py-1 text-sm text-amber-200"
+                class="user-role-chip inline-flex items-center gap-1.5 rounded-md bg-amber-500/20 pl-2 pr-1 py-1 text-sm text-amber-200"
               >
                 <span class="min-w-0 truncate">{{ r.name }}</span>
                 <button
                   type="button"
-                  class="flex h-5 w-5 shrink-0 items-center justify-center rounded text-inherit opacity-70 hover:opacity-100 hover:bg-amber-500/30 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                  class="user-role-chip-remove flex h-5 w-5 shrink-0 items-center justify-center rounded text-inherit opacity-70 hover:opacity-100 hover:bg-amber-500/30 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
                   aria-label="Прибрати роль"
                   @click="toggleRole(r.slug)"
                 >
@@ -102,7 +102,7 @@
             </div>
             <div
               v-show="rolesDropdownOpen"
-              class="absolute top-full left-0 z-20 mt-1 max-h-56 w-full min-w-0 overflow-y-auto rounded-lg border border-zinc-600 bg-zinc-800 py-1 shadow-lg"
+              class="workhub-multiselect-dropdown absolute top-full left-0 z-20 mt-1 max-h-56 w-full min-w-0 overflow-y-auto rounded-lg border border-zinc-600 bg-zinc-800 py-1 shadow-lg"
             >
               <p v-if="rolesStore.roles.length === 0" class="px-3 py-2 text-sm text-zinc-500">
                 Ролей немає.

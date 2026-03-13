@@ -59,7 +59,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   danger:
     `${sharedIconLayout} bg-red-600/80 text-white hover:bg-red-600`,
   dangerGhost:
-    `${sharedIconLayout} text-red-400 hover:bg-red-500/20`,
+    `${sharedIconLayout} border border-red-500/40 text-red-300 hover:bg-red-500/20`,
   link:
     'rounded px-2 py-1 text-xs text-amber-400 hover:bg-amber-500/20',
   sidebar:
@@ -77,7 +77,7 @@ const sizeClasses: Record<string, string> = {
   'icon-md': 'h-9 w-9 shrink-0 items-center justify-center',
 };
 
-const noSizeVariants = new Set(['dangerGhost', 'link', 'sidebar', 'sidebarDanger']);
+const noSizeVariants = new Set(['link', 'sidebar', 'sidebarDanger']);
 
 const buttonClass = computed(() => [
   baseClass,
