@@ -51,9 +51,9 @@
       </template>
     </div>
 
-    <ConfirmDeleteModal v-model="deleteTarget" :loading="deleteLoading" @confirm="handleDelete">
+    <ConfirmDeleteModal v-model="deleteTarget" @confirm="handleDelete">
       <template #message>
-        Видалити роль <strong>{{ deleteTarget?.name }}</strong>?
+        роль {{ deleteTarget?.name }}
       </template>
     </ConfirmDeleteModal>
   </div>
@@ -72,6 +72,7 @@ import {
   DropdownItem,
   ConfirmDeleteModal,
 } from '@/shared/ui';
+import { useToast } from '@/shared/ui/Toast';
 import { useRolesStore } from '@/features/roles';
 import { usePermissions } from '@/shared/composables/usePermissions';
 import { PERMISSIONS } from '@/shared/constants/permissions';
@@ -83,29 +84,43 @@ const canCreate = computed(() => can(PERMISSIONS.ROLES_CREATE));
 const canUpdate = computed(() => can(PERMISSIONS.ROLES_UPDATE));
 const canDelete = computed(() => can(PERMISSIONS.ROLES_DELETE));
 
+const { successWithUndo, error: showError } = useToast();
 const rolesStore = useRolesStore();
 const { roles, loading, error } = storeToRefs(rolesStore);
 
-const deleteLoading = ref(false);
 const deleteTarget = ref<Role | null>(null);
 
 async function load() {
   if (!canRead.value) return;
-  await rolesStore.fetchAll();
+  try {
+    await rolesStore.fetchAll();
+  } catch (e: unknown) {
+    showError(e instanceof Error ? e.message : 'Не вдалося завантажити ролі');
+  }
 }
 
-async function handleDelete() {
+function handleDelete() {
   if (!deleteTarget.value) return;
-  deleteLoading.value = true;
+  const id = deleteTarget.value.id;
+  const name = deleteTarget.value.name;
+  const removed = rolesStore.removeFromList(id);
+  deleteTarget.value = null;
   rolesStore.clearError();
-  try {
-    await rolesStore.remove(deleteTarget.value.id);
-    deleteTarget.value = null;
-  } catch (e: unknown) {
-    rolesStore.setError(e instanceof Error ? e.message : 'Помилка видалення');
-  } finally {
-    deleteLoading.value = false;
-  }
+
+  if (!removed) return;
+
+  const timeoutId = setTimeout(async () => {
+    try {
+      await rolesStore.remove(id);
+    } catch (e: unknown) {
+      showError(e instanceof Error ? e.message : 'Помилка видалення');
+    }
+  }, 5000);
+
+  successWithUndo(`Роль ${name} видалено`, () => {
+    clearTimeout(timeoutId);
+    rolesStore.restoreAt(removed.item, removed.index);
+  });
 }
 
 function confirmDelete(role: Role) {

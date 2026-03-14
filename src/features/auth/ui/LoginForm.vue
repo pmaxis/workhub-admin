@@ -29,11 +29,13 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Button, Input, FormField, Form, ErrorMessage } from '@/shared/ui';
+import { useToast } from '@/shared/ui/Toast';
 import { useAuth } from '../model/useAuth';
 
 const emit = defineEmits<{ success: [] }>();
 
 const router = useRouter();
+const { error: showError } = useToast();
 const auth = useAuth();
 
 const email = ref('');
@@ -49,7 +51,9 @@ async function handleSubmit() {
     emit('success');
     await router.replace({ name: 'dashboard' });
   } catch (e) {
-    error.value = e instanceof Error ? e.message : 'Помилка входу';
+    const msg = e instanceof Error ? e.message : 'Помилка входу';
+    error.value = msg;
+    showError(msg);
   } finally {
     loading.value = false;
   }

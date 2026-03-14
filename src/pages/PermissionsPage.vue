@@ -52,9 +52,9 @@
       </template>
     </div>
 
-    <ConfirmDeleteModal v-model="deleteTarget" :loading="deleteLoading" @confirm="handleDelete">
+    <ConfirmDeleteModal v-model="deleteTarget" @confirm="handleDelete">
       <template #message>
-        Видалити дозвіл <strong class="font-mono">{{ deleteTarget?.key }}</strong>?
+        дозвіл <span class="font-mono">{{ deleteTarget?.key }}</span>
       </template>
     </ConfirmDeleteModal>
   </div>
@@ -73,6 +73,7 @@ import {
   DropdownItem,
   ConfirmDeleteModal,
 } from '@/shared/ui';
+import { useToast } from '@/shared/ui/Toast';
 import { usePermissionsStore } from '@/features/permissions';
 import { usePermissions } from '@/shared/composables/usePermissions';
 import { PERMISSIONS } from '@/shared/constants/permissions';
@@ -84,29 +85,43 @@ const canCreate = computed(() => can(PERMISSIONS.PERMISSIONS_CREATE));
 const canUpdate = computed(() => can(PERMISSIONS.PERMISSIONS_UPDATE));
 const canDelete = computed(() => can(PERMISSIONS.PERMISSIONS_DELETE));
 
+const { successWithUndo, error: showError } = useToast();
 const permissionsStore = usePermissionsStore();
 const { permissions, loading, error } = storeToRefs(permissionsStore);
 
-const deleteLoading = ref(false);
 const deleteTarget = ref<Permission | null>(null);
 
 async function load() {
   if (!canRead.value) return;
-  await permissionsStore.fetchAll();
+  try {
+    await permissionsStore.fetchAll();
+  } catch (e: unknown) {
+    showError(e instanceof Error ? e.message : 'Не вдалося завантажити дозволи');
+  }
 }
 
-async function handleDelete() {
+function handleDelete() {
   if (!deleteTarget.value) return;
-  deleteLoading.value = true;
+  const id = deleteTarget.value.id;
+  const key = deleteTarget.value.key;
+  const removed = permissionsStore.removeFromList(id);
+  deleteTarget.value = null;
   permissionsStore.clearError();
-  try {
-    await permissionsStore.remove(deleteTarget.value.id);
-    deleteTarget.value = null;
-  } catch (e: unknown) {
-    permissionsStore.setError(e instanceof Error ? e.message : 'Помилка видалення');
-  } finally {
-    deleteLoading.value = false;
-  }
+
+  if (!removed) return;
+
+  const timeoutId = setTimeout(async () => {
+    try {
+      await permissionsStore.remove(id);
+    } catch (e: unknown) {
+      showError(e instanceof Error ? e.message : 'Помилка видалення');
+    }
+  }, 5000);
+
+  successWithUndo(`Дозвіл ${key} видалено`, () => {
+    clearTimeout(timeoutId);
+    permissionsStore.restoreAt(removed.item, removed.index);
+  });
 }
 
 function confirmDelete(perm: Permission) {

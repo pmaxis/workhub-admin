@@ -138,3 +138,25 @@ body.theme-light .user-role-chip {
 body.theme-light .user-role-chip-remove:hover {
   @apply bg-amber-200;
 }
+
+/* Світла тема: toast */
+body.theme-light .workhub-toast {
+  @apply bg-white shadow-lg;
+}
+body.theme-light .workhub-toast .hover\:bg-zinc-700\/50:hover {
+  @apply bg-zinc-100;
+}
+
+/* Світла тема: модальне вікно підтвердження видалення */
+body.theme-light .workhub-confirm-modal-overlay {
+  @apply bg-black/40;
+}
+body.theme-light .workhub-confirm-modal {
+  @apply border-zinc-300 bg-white text-zinc-900 shadow-xl;
+}
+body.theme-light .workhub-confirm-modal .text-zinc-100 {
+  @apply text-zinc-900;
+}
+body.theme-light .workhub-confirm-modal .text-zinc-500 {
+  @apply text-zinc-600;
+}

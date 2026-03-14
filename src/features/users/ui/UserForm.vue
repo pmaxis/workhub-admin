@@ -137,6 +137,7 @@
 import { ref, reactive, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Button, Input, FormField, Form, ErrorMessage } from '@/shared/ui';
+import { useToast } from '@/shared/ui/Toast';
 import { useUsersStore } from '@/features/users';
 import { useRolesStore } from '@/features/roles';
 import type { User } from '@/entities/user/types';
@@ -144,6 +145,7 @@ import type { Role } from '@/entities/role/types';
 
 const route = useRoute();
 const router = useRouter();
+const { success, error: showError } = useToast();
 const usersStore = useUsersStore();
 const rolesStore = useRolesStore();
 
@@ -221,7 +223,9 @@ async function load() {
     form.thirdName = user.value.thirdName ?? '';
     assignedRoleSlugs.value = (user.value.roles ?? []).map((r) => r.slug);
   } catch (e: unknown) {
-    loadError.value = e instanceof Error ? e.message : 'Не вдалося завантажити користувача';
+    const msg = e instanceof Error ? e.message : 'Не вдалося завантажити користувача';
+    loadError.value = msg;
+    showError(msg);
   }
 }
 
@@ -277,9 +281,12 @@ async function handleSubmit() {
         await usersStore.addRole(newUser.id, role.id);
       }
     }
+    success(isEdit.value ? 'Користувача оновлено' : 'Користувача створено');
     router.push({ name: 'users' });
   } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Помилка збереження';
+    const msg = e instanceof Error ? e.message : 'Помилка збереження';
+    error.value = msg;
+    showError(msg);
   } finally {
     submitLoading.value = false;
   }

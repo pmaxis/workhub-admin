@@ -59,6 +59,18 @@ export const useRolesStore = defineStore('roles', () => {
     list.value = list.value.filter((r) => r.id !== id);
   }
 
+  function removeFromList(id: string): { item: Role; index: number } | undefined {
+    const index = list.value.findIndex((r) => r.id === id);
+    if (index < 0) return undefined;
+    const item = list.value[index]!;
+    list.value = list.value.filter((r) => r.id !== id);
+    return { item, index };
+  }
+
+  function restoreAt(item: Role, index: number): void {
+    list.value = [...list.value.slice(0, index), item, ...list.value.slice(index)];
+  }
+
   async function addPermission(roleId: string, permissionId: string): Promise<Role> {
     error.value = '';
     await rolesApi.addPermission(roleId, permissionId);
@@ -88,6 +100,8 @@ export const useRolesStore = defineStore('roles', () => {
     create,
     update,
     remove,
+    removeFromList,
+    restoreAt,
     addPermission,
     deletePermission,
     setError,

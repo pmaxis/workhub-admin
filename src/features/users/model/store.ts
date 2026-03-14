@@ -59,6 +59,20 @@ export const useUsersStore = defineStore('users', () => {
     list.value = list.value.filter((u) => u.id !== id);
   }
 
+  /** Оптимістичне видалення зі списку (без API). Повертає елемент та індекс для restore. */
+  function removeFromList(id: string): { item: User; index: number } | undefined {
+    const index = list.value.findIndex((u) => u.id === id);
+    if (index < 0) return undefined;
+    const item = list.value[index]!;
+    list.value = list.value.filter((u) => u.id !== id);
+    return { item, index };
+  }
+
+  /** Відновлення елемента в список (для undo). */
+  function restoreAt(item: User, index: number): void {
+    list.value = [...list.value.slice(0, index), item, ...list.value.slice(index)];
+  }
+
   async function addRole(userId: string, roleId: string): Promise<User> {
     error.value = '';
     await usersApi.addRole(userId, roleId);
@@ -88,6 +102,8 @@ export const useUsersStore = defineStore('users', () => {
     create,
     update,
     remove,
+    removeFromList,
+    restoreAt,
     addRole,
     deleteRole,
     setError,

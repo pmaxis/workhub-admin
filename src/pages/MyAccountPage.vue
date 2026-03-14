@@ -71,6 +71,7 @@
 import { computed, ref, onMounted } from 'vue';
 import { useAuth } from '@/features/auth';
 import { apiClient } from '@/shared/api/client';
+import { useToast } from '@/shared/ui/Toast';
 
 type SessionItem = {
   id: string;
@@ -93,6 +94,7 @@ type RawSessionItem = {
 };
 
 const auth = useAuth();
+const { success, error: showError } = useToast();
 const loading = ref(false);
 const error = ref('');
 const sessions = ref<SessionItem[]>([]);
@@ -133,7 +135,9 @@ async function loadSessions() {
     const normalized = allRaw.map(normalizeSession);
     sessions.value = normalized.filter((item) => item.userId === auth.user?.id);
   } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Не вдалося завантажити сесії';
+    const msg = e instanceof Error ? e.message : 'Не вдалося завантажити сесії';
+    error.value = msg;
+    showError(msg);
     sessions.value = [];
   } finally {
     loading.value = false;
@@ -146,8 +150,11 @@ async function deleteSession(sessionId: string) {
   try {
     await apiClient.delete(`/sessions/${sessionId}`);
     sessions.value = sessions.value.filter((session) => session.id !== sessionId);
+    success('Сесію видалено');
   } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Не вдалося видалити сесію';
+    const msg = e instanceof Error ? e.message : 'Не вдалося видалити сесію';
+    error.value = msg;
+    showError(msg);
   } finally {
     deletingSessionId.value = null;
   }

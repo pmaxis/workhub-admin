@@ -150,6 +150,7 @@
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Button, Input, FormField, Form, ErrorMessage } from '@/shared/ui';
+import { useToast } from '@/shared/ui/Toast';
 import { useRolesStore } from '@/features/roles';
 import { usePermissionsStore } from '@/features/permissions';
 import type { Role } from '@/entities/role/types';
@@ -157,6 +158,7 @@ import type { Permission } from '@/entities/permission/types';
 
 const route = useRoute();
 const router = useRouter();
+const { success, error: showError } = useToast();
 const rolesStore = useRolesStore();
 const permissionsStore = usePermissionsStore();
 
@@ -199,7 +201,9 @@ async function load() {
     form.name = role.value.name;
     assignedPermissionIds.value = (role.value.permissions ?? []).map((p) => p.id);
   } catch (e: unknown) {
-    loadError.value = e instanceof Error ? e.message : 'Не вдалося завантажити роль';
+    const msg = e instanceof Error ? e.message : 'Не вдалося завантажити роль';
+    loadError.value = msg;
+    showError(msg);
   }
 }
 
@@ -261,9 +265,12 @@ async function handleSubmit() {
         name: form.name,
       });
     }
+    success(isEdit.value ? 'Роль оновлено' : 'Роль створено');
     router.push({ name: 'roles' });
   } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Помилка збереження';
+    const msg = e instanceof Error ? e.message : 'Помилка збереження';
+    error.value = msg;
+    showError(msg);
   } finally {
     submitLoading.value = false;
   }

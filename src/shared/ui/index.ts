@@ -9,3 +9,4 @@ export { ErrorMessage } from './ErrorMessage';
 export { Table, TableTh, TableTd } from './Table';
 export { Dropdown, DropdownItem } from './Dropdown';
 export { default as ConfirmDeleteModal } from './ConfirmDeleteModal/ConfirmDeleteModal.vue';
+export { ToastContainer, useToast } from './Toast';

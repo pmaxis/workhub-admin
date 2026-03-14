@@ -61,9 +61,9 @@
       </template>
     </div>
 
-    <ConfirmDeleteModal v-model="deleteTarget" :loading="deleteLoading" @confirm="handleDelete">
+    <ConfirmDeleteModal v-model="deleteTarget" @confirm="handleDelete">
       <template #message>
-        Видалити користувача <strong>{{ deleteTarget?.email }}</strong>?
+        користувача {{ deleteTarget?.email }}
       </template>
     </ConfirmDeleteModal>
   </div>
@@ -82,6 +82,7 @@ import {
   DropdownItem,
   ConfirmDeleteModal,
 } from '@/shared/ui';
+import { useToast } from '@/shared/ui/Toast';
 import { useUsersStore } from '@/features/users';
 import { usePermissions } from '@/shared/composables/usePermissions';
 import { PERMISSIONS } from '@/shared/constants/permissions';
@@ -93,29 +94,43 @@ const canCreate = computed(() => can(PERMISSIONS.USERS_CREATE));
 const canUpdate = computed(() => can(PERMISSIONS.USERS_UPDATE));
 const canDelete = computed(() => can(PERMISSIONS.USERS_DELETE));
 
+const { successWithUndo, error: showError } = useToast();
 const usersStore = useUsersStore();
 const { users, loading, error } = storeToRefs(usersStore);
 
-const deleteLoading = ref(false);
 const deleteTarget = ref<User | null>(null);
 
 async function load() {
   if (!canRead.value) return;
-  await usersStore.fetchAll();
+  try {
+    await usersStore.fetchAll();
+  } catch (e: unknown) {
+    showError(e instanceof Error ? e.message : 'Не вдалося завантажити користувачів');
+  }
 }
 
-async function handleDelete() {
+function handleDelete() {
   if (!deleteTarget.value) return;
-  deleteLoading.value = true;
+  const id = deleteTarget.value.id;
+  const email = deleteTarget.value.email;
+  const removed = usersStore.removeFromList(id);
+  deleteTarget.value = null;
   usersStore.clearError();
-  try {
-    await usersStore.remove(deleteTarget.value.id);
-    deleteTarget.value = null;
-  } catch (e: unknown) {
-    usersStore.setError(e instanceof Error ? e.message : 'Помилка видалення');
-  } finally {
-    deleteLoading.value = false;
-  }
+
+  if (!removed) return;
+
+  const timeoutId = setTimeout(async () => {
+    try {
+      await usersStore.remove(id);
+    } catch (e: unknown) {
+      showError(e instanceof Error ? e.message : 'Помилка видалення');
+    }
+  }, 5000);
+
+  successWithUndo(`Користувача ${email} видалено`, () => {
+    clearTimeout(timeoutId);
+    usersStore.restoreAt(removed.item, removed.index);
+  });
 }
 
 function confirmDelete(user: User) {

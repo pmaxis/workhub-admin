@@ -62,6 +62,18 @@ export const usePermissionsStore = defineStore('permissions', () => {
     list.value = list.value.filter((p) => p.id !== id);
   }
 
+  function removeFromList(id: string): { item: Permission; index: number } | undefined {
+    const index = list.value.findIndex((p) => p.id === id);
+    if (index < 0) return undefined;
+    const item = list.value[index]!;
+    list.value = list.value.filter((p) => p.id !== id);
+    return { item, index };
+  }
+
+  function restoreAt(item: Permission, index: number): void {
+    list.value = [...list.value.slice(0, index), item, ...list.value.slice(index)];
+  }
+
   function setError(msg: string) {
     error.value = msg;
   }
@@ -79,6 +91,8 @@ export const usePermissionsStore = defineStore('permissions', () => {
     create,
     update,
     remove,
+    removeFromList,
+    restoreAt,
     setError,
     clearError,
   };

@@ -58,11 +58,13 @@
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Button, Input, FormField, Form, ErrorMessage } from '@/shared/ui';
+import { useToast } from '@/shared/ui/Toast';
 import { usePermissionsStore } from '@/features/permissions';
 import type { Permission } from '@/entities/permission/types';
 
 const route = useRoute();
 const router = useRouter();
+const { success, error: showError } = useToast();
 const permissionsStore = usePermissionsStore();
 
 const permission = ref<Permission | null>(null);
@@ -92,7 +94,9 @@ async function load() {
     form.key = permission.value.key;
     form.description = permission.value.description ?? '';
   } catch (e: unknown) {
-    loadError.value = e instanceof Error ? e.message : 'Не вдалося завантажити дозвіл';
+    const msg = e instanceof Error ? e.message : 'Не вдалося завантажити дозвіл';
+    loadError.value = msg;
+    showError(msg);
   }
 }
 
@@ -111,9 +115,12 @@ async function handleSubmit() {
         description: form.description || undefined,
       });
     }
+    success(isEdit.value ? 'Дозвіл оновлено' : 'Дозвіл створено');
     router.push({ name: 'permissions' });
   } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Помилка збереження';
+    const msg = e instanceof Error ? e.message : 'Помилка збереження';
+    error.value = msg;
+    showError(msg);
   } finally {
     submitLoading.value = false;
   }
