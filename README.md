@@ -34,14 +34,12 @@ pnpm preview
 
 ## Environment Variables
 
-The admin app communicates with API through `axios` and a Vite dev proxy.
+The admin app communicates with the API through Axios. In dev mode, Vite proxies `/api` to the backend.
 
-### Main Variables
-
-- `VITE_API_BASE_URL` (frontend runtime base URL)
-  - default: `/api`
-- `VITE_API_PROXY_TARGET` (target for local Vite proxy)
-  - default: `http://localhost:3000`
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `VITE_API_BASE_URL` | Base URL for API requests (runtime) | `/api` |
+| `VITE_API_PROXY_TARGET` | Backend URL for Vite dev proxy | `http://localhost:3000` |
 
 ### `.env` Example
 
@@ -52,16 +50,30 @@ VITE_API_PROXY_TARGET=http://localhost:3000
 
 ## How API Works in Dev Mode
 
-- Frontend requests are sent to `/api/*`
+- Frontend requests go to `/api/*`
 - Vite proxies them to `VITE_API_PROXY_TARGET`
-- For cookie-based auth, proxy rewrites `Set-Cookie Path=/` to `Path=/api/`
-- If API is unavailable, proxy returns `503` with an error message
+- For cookie-based auth, the proxy rewrites `Set-Cookie Path=/` to `Path=/api/`
+- If the API is unavailable, the proxy returns `503` with an error message
+
+## Docker
+
+The project includes a separate `docker-compose.yml` for the admin panel.
+
+```bash
+docker compose up -d
+```
+
+- **Admin:** http://localhost
+
+By default, the admin connects to the API at `host.docker.internal:3000` (API running on the host). Ensure the API is running before starting the admin.
+
+On Linux, if `host.docker.internal` does not work, set `API_HOST` to your host IP or add `extra_hosts` in docker-compose.
 
 ## Authentication and Access Control
 
-- Login: `POST /auth/login` (via `/api/auth/login` in dev)
-- Refresh: `POST /auth/refresh`
-- Logout: `POST /auth/logout`
+- **Login:** `POST /auth/login` (via `/api/auth/login` in dev)
+- **Refresh:** `POST /auth/refresh` (uses HTTP-only cookie)
+- **Logout:** `POST /auth/logout`
 - Current user is resolved from access token payload (`userId`, `permissions`) + `GET /users/:id`
 - Admin panel access requires `manage.all`
 - User section access is additionally controlled by:
