@@ -35,6 +35,9 @@ body.theme-light .border-zinc-800 {
 body.theme-light .border-zinc-700 {
   @apply border-zinc-300;
 }
+body.theme-light .border-zinc-600 {
+  @apply border-zinc-300;
+}
 
 body.theme-light .text-zinc-100,
 body.theme-light .text-zinc-200 {
@@ -92,12 +95,29 @@ body.theme-light .workhub-input:focus {
   @apply border-amber-500 outline-none ring-1 ring-amber-500;
 }
 
+/* Світла тема: форма та лейбли — як по всій платформі */
+body.theme-light .workhub-form {
+  @apply border-zinc-300;
+}
+body.theme-light .workhub-form-field-label {
+  @apply text-zinc-600;
+}
+
 /* Світла тема: мультиселект ролей — як поля вводу */
 body.theme-light .workhub-multiselect-box {
   @apply border-zinc-300 bg-white text-zinc-900;
 }
 body.theme-light .workhub-multiselect-dropdown {
-  @apply border-zinc-300 bg-white;
+  @apply border-zinc-300 bg-white text-zinc-900;
+}
+body.theme-light .workhub-multiselect-dropdown .text-zinc-500 {
+  @apply text-zinc-600;
+}
+body.theme-light .workhub-multiselect-trigger {
+  @apply text-zinc-600;
+}
+body.theme-light .workhub-multiselect-trigger:hover {
+  @apply bg-zinc-200 text-zinc-900;
 }
 
 /* Світла тема: ховери (таблиці, списки, дропдауни) */

@@ -26,7 +26,7 @@ const props = withDefaults(
 
 const formClass = computed(() =>
   props.bordered
-    ? 'w-full space-y-4 rounded-lg border border-zinc-700 bg-zinc-800/50 p-6'
+    ? 'workhub-form w-full space-y-4 rounded-lg border border-zinc-700 bg-zinc-800/50 p-6'
     : 'space-y-4'
 );
 </script>

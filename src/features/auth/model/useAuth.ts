@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { authApi } from '../api/auth.api';
+import { profileApi } from '@/features/profile';
 import type { AuthUser, LoginPayload } from './types';
 
 type AccessTokenPayload = {
@@ -59,7 +60,7 @@ export const useAuth = defineStore('auth', () => {
       user.value = null;
       return;
     }
-    const data = await authApi.getUserById(payload.userId);
+    const data = await profileApi.getProfile();
     user.value = {
       ...data,
       permissions: payload.permissions ?? [],

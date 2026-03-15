@@ -5,7 +5,7 @@
         v-if="item.type === 'link'"
         :to="item.to"
         :label="item.label"
-        :is-active="isLinkActive(item.name)"
+        :is-active="isLinkActive(item)"
       />
       <NavItem
         v-else
@@ -36,8 +36,13 @@ defineEmits<{
 
 const route = useRoute();
 
-function isLinkActive(name: string): boolean {
-  return route.name === name;
+function isLinkActive(item: { name: string; routeNames?: string[] }): boolean {
+  const name = route.name as string;
+  if (!name) return false;
+  if (item.routeNames) {
+    return item.routeNames.includes(name);
+  }
+  return route.name === item.name;
 }
 
 function isChildActive(child: { routeNames: string[] }): boolean {

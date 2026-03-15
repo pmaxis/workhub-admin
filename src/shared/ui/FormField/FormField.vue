@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="workhub-form-field">
     <label v-if="label" :for="fieldId" :class="labelClass">
       {{ label }}
     </label>
@@ -22,7 +22,7 @@ const props = withDefaults(
 provide('formFieldId', props.fieldId);
 
 const labelClass = computed(() => [
-  'block font-medium text-zinc-400',
-  props.size === 'sm' ? 'mb-1 text-xs' : 'mb-1.5 text-sm text-zinc-300',
+  'workhub-form-field-label block font-medium',
+  props.size === 'sm' ? 'mb-1 text-xs text-zinc-400' : 'mb-1.5 text-sm text-zinc-300',
 ]);
 </script>

@@ -93,7 +93,7 @@
               </span>
               <button
                 type="button"
-                class="rounded px-2 py-1 text-sm text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="workhub-multiselect-trigger rounded px-2 py-1 text-sm text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 :disabled="rolesAvailableToAdd.length === 0"
                 @click="rolesDropdownOpen = !rolesDropdownOpen"
               >
