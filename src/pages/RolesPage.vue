@@ -114,6 +114,7 @@ function handleDelete() {
       await rolesStore.remove(id);
     } catch (e: unknown) {
       showError(e instanceof Error ? e.message : 'Помилка видалення');
+      rolesStore.restoreAt(removed.item, removed.index);
     }
   }, 5000);
 

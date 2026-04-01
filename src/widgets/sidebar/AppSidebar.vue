@@ -13,7 +13,6 @@
         :is-light-theme="isLightTheme"
         :is-user-menu-open="isUserMenuOpen"
         @toggle-menu="isUserMenuOpen = !isUserMenuOpen"
-        @logout="handleLogout"
       />
     </aside>
 

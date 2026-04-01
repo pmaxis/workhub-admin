@@ -9,7 +9,4 @@ export interface LoginResponse {
   accessToken: string;
 }
 
-export interface AuthUser extends User {
-  /** Ключі дозволів з access token payload */
-  permissions?: string[];
-}
+export type AuthUser = User;

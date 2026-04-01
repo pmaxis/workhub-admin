@@ -124,6 +124,7 @@ function handleDelete() {
       await usersStore.remove(id);
     } catch (e: unknown) {
       showError(e instanceof Error ? e.message : 'Помилка видалення');
+      usersStore.restoreAt(removed.item, removed.index);
     }
   }, 5000);
 

@@ -6,7 +6,6 @@ import type { AuthUser, LoginPayload } from './types';
 
 type AccessTokenPayload = {
   userId: string;
-  permissions?: string[];
 };
 
 function parseAccessTokenPayload(token: string): AccessTokenPayload | null {
@@ -63,7 +62,7 @@ export const useAuth = defineStore('auth', () => {
     const data = await profileApi.getProfile();
     user.value = {
       ...data,
-      permissions: payload.permissions ?? [],
+      permissions: data.permissions ?? [],
     };
   }
 

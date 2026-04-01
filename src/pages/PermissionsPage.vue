@@ -115,6 +115,7 @@ function handleDelete() {
       await permissionsStore.remove(id);
     } catch (e: unknown) {
       showError(e instanceof Error ? e.message : 'Помилка видалення');
+      permissionsStore.restoreAt(removed.item, removed.index);
     }
   }, 5000);
 
