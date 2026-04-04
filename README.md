@@ -1,113 +1,44 @@
 # WorkHub Admin
 
-Admin panel for managing WorkHub users, roles, permissions, personal account, and sessions.
+Admin UI for WorkHub (users, roles, permissions, account, sessions).
 
-## Tech Stack
+## Architecture
 
-- Vue 3 + TypeScript
-- Vite
-- Pinia
-- Vue Router
-- Axios
-- Tailwind CSS
+- **Vue 3**, **TypeScript**, **Vite**, **Pinia**, **Vue Router**, **Tailwind CSS**, **Axios**.
+- **`features/`** — screens and stores; **`app/`** — router and providers; **`shared/`**, **`widgets/`** — API client and layout.
+- Same API routing model as **WorkHub Web**: **`/api`** → nginx proxy → backend **`/v1/...`**.
 
-## Requirements
+## Environment variables
 
-- Node.js 20+
-- pnpm 10+
+### `.env` — Docker runtime (container)
 
-## Local Development
+| Key | Example value | Notes |
+|-----|----------------|--------|
+| `API_HOST` | `host.docker.internal` | API host from inside the container |
+| `API_PORT` | `3000` | API port |
 
-```bash
-pnpm install
-pnpm dev
-```
+`docker-compose.yml` sets `extra_hosts` for Linux (`host.docker.internal`).
 
-By default, the app runs at `http://localhost:5173`.
+### `.env` — local dev (Vite, optional)
 
-## Build
+| Key | Example value | Notes |
+|-----|----------------|--------|
+| `VITE_API_BASE_URL` | `/api` | Same default in `Dockerfile` |
+| `VITE_API_VERSION` | `v1` | Same default in `Dockerfile` |
+| `VITE_API_PROXY_TARGET` | `http://localhost:3000` | Dev server proxy only |
 
-```bash
-pnpm build
-pnpm preview
-```
-
-## Environment Variables
-
-The admin app communicates with the API through Axios. In dev mode, Vite proxies `/api` to the backend.
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `VITE_API_BASE_URL` | Base URL for API requests (runtime) | `/api` |
-| `VITE_API_PROXY_TARGET` | Backend URL for Vite dev proxy | `http://localhost:3000` |
-
-### `.env` Example
-
-```env
-VITE_API_BASE_URL=/api
-VITE_API_PROXY_TARGET=http://localhost:3000
-```
-
-## How API Works in Dev Mode
-
-- Frontend requests go to `/api/*`
-- Vite proxies them to `VITE_API_PROXY_TARGET`
-- For cookie-based auth, the proxy rewrites `Set-Cookie Path=/` to `Path=/api/`
-- If the API is unavailable, the proxy returns `503` with an error message
-
-## Docker
-
-The project includes a separate `docker-compose.yml` for the admin panel.
+## Run with Docker
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
-- **Admin:** http://localhost
+- **App:** `http://localhost` (port **80** mapped to container 80)
 
-By default, the admin connects to the API at `host.docker.internal:3000` (API running on the host). Ensure the API is running before starting the admin.
+Ensure the API is running and allows your origin in `CORS_ORIGINS`.
 
-On Linux, if `host.docker.internal` does not work, set `API_HOST` to your host IP or add `extra_hosts` in docker-compose.
+Stop:
 
-## Authentication and Access Control
-
-- **Login:** `POST /auth/login` (via `/api/auth/login` in dev)
-- **Refresh:** `POST /auth/refresh` (uses HTTP-only cookie)
-- **Logout:** `POST /auth/logout`
-- Current user is resolved from access token payload (`userId`, `permissions`) + `GET /users/:id`
-- Admin panel access requires `manage.all`
-- User section access is additionally controlled by:
-  - `users.read`
-  - `users.create`
-  - `users.update`
-  - `users.delete`
-
-## Main Pages
-
-- `/login` — sign in
-- `/` — dashboard
-- `/users` — users list
-- `/users/new`, `/users/:id/edit` — user form
-- `/roles` — roles list
-- `/roles/new`, `/roles/:id/edit` — role form
-- `/permissions` — permissions list
-- `/permissions/new`, `/permissions/:id/edit` — permission form
-- `/my-account` — my account + sessions (`GET /sessions`, `DELETE /sessions/:id`)
-
-## Project Structure
-
-```text
-src/
-  app/              # router, providers
-  entities/         # domain base types
-  features/         # auth, users, roles, permissions, theme
-  pages/            # route pages
-  shared/           # api client, shared UI, constants
-  widgets/          # layout/sidebar
+```bash
+docker compose down
 ```
-
-## Notes
-
-- Sessions are not mocked; list/delete operations use real API endpoints.
-- The `My Account` dropdown item opens the account page.
-- Profile editing fields are planned for a next iteration and are currently a placeholder.

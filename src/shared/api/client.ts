@@ -56,9 +56,9 @@ export function setAuthGetter(fn: AuthTokenGetter): void {
 // ─── Axios instance ────────────────────────────────────────────────────────
 
 const http = axios.create({
-  baseURL: config.apiBaseUrl,
+  baseURL: config.apiRequestBaseUrl,
   headers: { 'Content-Type': 'application/json' },
-  withCredentials: false,
+  withCredentials: true,
 });
 
 /** Request interceptor: підставляє Bearer токен з опції запиту або з authGetter */
