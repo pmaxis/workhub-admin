@@ -28,14 +28,14 @@
           class="shrink-0 rounded-lg border border-emerald-500/50 bg-emerald-500/20 px-3 py-1.5 text-sm font-medium text-emerald-300 transition-colors hover:bg-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
           @click="handleUndo"
         >
-          Скасувати
+          Undo
         </button>
       </template>
       <button
         v-else
         type="button"
         class="shrink-0 rounded-lg p-1.5 text-zinc-400 opacity-60 transition-all hover:bg-zinc-700/50 hover:opacity-100 hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
-        aria-label="Закрити"
+        aria-label="Close"
         @click="dismiss"
       >
         <CloseIcon class="h-4 w-4" />

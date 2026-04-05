@@ -2,29 +2,29 @@
   <div class="space-y-6">
     <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
       <div v-if="!canRead" class="text-zinc-500 text-sm">
-        У вас немає доступу до списку користувачів.
+        You do not have access to the users list.
       </div>
       <template v-else>
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-base font-medium text-zinc-200">Користувачі</h2>
+          <h2 class="text-base font-medium text-zinc-200">Users</h2>
           <Button v-if="canCreate" :to="{ name: 'userCreate' }" variant="secondary">
-            Додати користувача
+            Add user
           </Button>
         </div>
 
         <ErrorMessage :message="error" class="mb-4" />
 
-        <div v-if="loading" class="text-zinc-400 text-sm">Завантаження…</div>
+        <div v-if="loading" class="text-zinc-400 text-sm">Loading…</div>
         <div v-else-if="users.length === 0" class="text-zinc-500 text-sm">
-          Користувачів поки немає.
+          No users yet.
         </div>
         <Table v-else :items="users" key-field="id">
           <template #head>
             <TableTh>Email</TableTh>
-            <TableTh>Прізвище</TableTh>
-            <TableTh>Імʼя</TableTh>
-            <TableTh>По батькові</TableTh>
-            <TableTh v-if="canUpdate || canDelete" align="end">Дії</TableTh>
+            <TableTh>Last name</TableTh>
+            <TableTh>First name</TableTh>
+            <TableTh>Middle name</TableTh>
+            <TableTh v-if="canUpdate || canDelete" align="end">Actions</TableTh>
           </template>
           <template #row="{ item: u }">
             <TableTd>
@@ -49,10 +49,10 @@
             <TableTd v-if="canUpdate || canDelete" align="end">
               <Dropdown>
                 <DropdownItem v-if="canUpdate" :to="{ name: 'userEdit', params: { id: u.id } }">
-                  Редагувати
+                  Edit
                 </DropdownItem>
                 <DropdownItem v-if="canDelete" danger @click="confirmDelete(u)">
-                  Видалити
+                  Delete
                 </DropdownItem>
               </Dropdown>
             </TableTd>
@@ -63,7 +63,7 @@
 
     <ConfirmDeleteModal v-model="deleteTarget" @confirm="handleDelete">
       <template #message>
-        користувача {{ deleteTarget?.email }}
+        user {{ deleteTarget?.email }}
       </template>
     </ConfirmDeleteModal>
   </div>
@@ -105,7 +105,7 @@ async function load() {
   try {
     await usersStore.fetchAll();
   } catch (e: unknown) {
-    showError(e instanceof Error ? e.message : 'Не вдалося завантажити користувачів');
+    showError(e instanceof Error ? e.message : 'Could not load users');
   }
 }
 
@@ -123,12 +123,12 @@ function handleDelete() {
     try {
       await usersStore.remove(id);
     } catch (e: unknown) {
-      showError(e instanceof Error ? e.message : 'Помилка видалення');
+      showError(e instanceof Error ? e.message : 'Delete failed');
       usersStore.restoreAt(removed.item, removed.index);
     }
   }, 5000);
 
-  successWithUndo(`Користувача ${email} видалено`, () => {
+  successWithUndo(`User ${email} deleted`, () => {
     clearTimeout(timeoutId);
     usersStore.restoreAt(removed.item, removed.index);
   });

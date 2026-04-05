@@ -5,9 +5,7 @@ export interface ToastItem {
   message: string;
   variant: ToastVariant;
   duration?: number;
-  /** Callback при натисканні «Скасувати». Показує кнопку undo з таймером. */
   onUndo?: () => void;
-  /** Тривалість вікна для undo (мс). За замовчуванням 5000. */
   undoDuration?: number;
 }
 

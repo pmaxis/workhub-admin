@@ -17,7 +17,7 @@ export const useUsersStore = defineStore('users', () => {
     try {
       list.value = await usersApi.getAll();
     } catch (e: unknown) {
-      error.value = e instanceof Error ? e.message : 'Не вдалося завантажити користувачів';
+      error.value = e instanceof Error ? e.message : 'Could not load users';
       throw e;
     } finally {
       loading.value = false;
@@ -59,7 +59,6 @@ export const useUsersStore = defineStore('users', () => {
     list.value = list.value.filter((u) => u.id !== id);
   }
 
-  /** Оптимістичне видалення зі списку (без API). Повертає елемент та індекс для restore. */
   function removeFromList(id: string): { item: User; index: number } | undefined {
     const index = list.value.findIndex((u) => u.id === id);
     if (index < 0) return undefined;
@@ -68,7 +67,6 @@ export const useUsersStore = defineStore('users', () => {
     return { item, index };
   }
 
-  /** Відновлення елемента в список (для undo). */
   function restoreAt(item: User, index: number): void {
     list.value = [...list.value.slice(0, index), item, ...list.value.slice(index)];
   }

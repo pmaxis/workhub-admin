@@ -6,7 +6,7 @@
         :to="{ name: 'roles' }"
         class="mt-2 inline-block text-sm text-amber-400 hover:underline"
       >
-        ← Назад до списку
+        ← Back to list
       </router-link>
     </div>
     <div v-else class="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
@@ -15,11 +15,11 @@
           :to="{ name: 'roles' }"
           class="text-zinc-400 hover:text-zinc-200 text-sm"
         >
-          ← Ролі
+          ← Roles
         </router-link>
       </div>
       <h2 class="text-base font-medium text-zinc-200 mb-4">
-        {{ isEdit ? 'Редагувати роль' : 'Нова роль' }}
+        {{ isEdit ? 'Edit role' : 'New role' }}
       </h2>
 
       <Form
@@ -31,26 +31,26 @@
           <Input
             v-model="form.slug"
             required
-            placeholder="наприклад, admin"
+            placeholder="e.g. admin"
           />
         </FormField>
-        <FormField label="Назва" field-id="role-name" size="sm">
+        <FormField label="Name" field-id="role-name" size="sm">
           <Input
             v-model="form.name"
             required
-            placeholder="наприклад, Адміністратор"
+            placeholder="e.g. Administrator"
           />
         </FormField>
 
         <div v-if="isEdit && role" class="mt-6 space-y-3 border-t border-zinc-700 pt-6">
           <div class="flex items-center gap-3">
-            <h3 class="text-sm font-medium text-zinc-200">Дозволи ролі</h3>
+            <h3 class="text-sm font-medium text-zinc-200">Role permissions</h3>
             <Button
               type="button"
               variant="secondary"
               size="sm"
               class="ml-auto shrink-0"
-              aria-label="Додати дозволи"
+              aria-label="Add permissions"
               @click="openPermissionsModal"
             >
               +
@@ -72,11 +72,11 @@
                 size="sm"
                 @click="removePermissionLocal(item.id)"
               >
-                Видалити
+                Remove
               </Button>
             </div>
             <p v-if="rolePermissionsDisplay.length === 0" class="text-sm text-zinc-500">
-              Дозволів немає. Натисніть «+», щоб обрати дозволи.
+              No permissions. Click “+” to add some.
             </p>
           </div>
         </div>
@@ -98,11 +98,11 @@
                 id="permissions-modal-title"
                 class="border-b border-zinc-700 px-4 py-3 text-sm font-medium text-zinc-200"
               >
-                Обрати дозволи для ролі
+                Select permissions for role
               </h2>
               <div class="min-h-0 flex-1 overflow-y-auto p-4">
                 <p v-if="permissionsStore.permissions.length === 0" class="text-sm text-zinc-500">
-                  Дозволів немає.
+                  No permissions.
                 </p>
                 <div v-else class="space-y-1">
                   <label
@@ -123,10 +123,10 @@
               </div>
               <div class="flex justify-end gap-2 border-t border-zinc-700 px-4 py-3">
                 <Button type="button" variant="ghost" @click="closePermissionsModal">
-                  Скасувати
+                  Cancel
                 </Button>
                 <Button type="button" variant="secondary" @click="savePermissionsModal">
-                  Зберегти
+                  Save
                 </Button>
               </div>
             </div>
@@ -135,13 +135,13 @@
 
         <ErrorMessage :message="error" />
         <template #actions>
-          <Button :to="{ name: 'roles' }" variant="ghost">Скасувати</Button>
+          <Button :to="{ name: 'roles' }" variant="ghost">Cancel</Button>
           <Button type="submit" variant="secondary" :disabled="submitLoading">
-            {{ submitLoading ? 'Збереження…' : 'Зберегти' }}
+            {{ submitLoading ? 'Saving…' : 'Save' }}
           </Button>
         </template>
       </Form>
-      <div v-else-if="isEdit" class="text-zinc-400 text-sm">Завантаження…</div>
+      <div v-else-if="isEdit" class="text-zinc-400 text-sm">Loading…</div>
     </div>
   </div>
 </template>
@@ -201,7 +201,7 @@ async function load() {
     form.name = role.value.name;
     assignedPermissionIds.value = (role.value.permissions ?? []).map((p) => p.id);
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Не вдалося завантажити роль';
+    const msg = e instanceof Error ? e.message : 'Could not load role';
     loadError.value = msg;
     showError(msg);
   }
@@ -210,9 +210,7 @@ async function load() {
 async function loadPermissions() {
   try {
     await permissionsStore.fetchAll();
-  } catch {
-    // ignore
-  }
+  } catch {}
 }
 
 function openPermissionsModal() {
@@ -265,10 +263,10 @@ async function handleSubmit() {
         name: form.name,
       });
     }
-    success(isEdit.value ? 'Роль оновлено' : 'Роль створено');
+    success(isEdit.value ? 'Role updated' : 'Role created');
     router.push({ name: 'roles' });
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Помилка збереження';
+    const msg = e instanceof Error ? e.message : 'Save failed';
     error.value = msg;
     showError(msg);
   } finally {

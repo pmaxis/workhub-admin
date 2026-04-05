@@ -2,26 +2,26 @@
   <div class="space-y-6">
     <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
       <div v-if="!canRead" class="text-zinc-500 text-sm">
-        У вас немає доступу до списку дозволів.
+        You do not have access to the permissions list.
       </div>
       <template v-else>
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-base font-medium text-zinc-200">Дозволи (permissions)</h2>
+          <h2 class="text-base font-medium text-zinc-200">Permissions</h2>
           <Button v-if="canCreate" :to="{ name: 'permissionCreate' }" variant="secondary">
-            Додати дозвіл
+            Add permission
           </Button>
         </div>
 
         <ErrorMessage :message="error" class="mb-4" />
 
-        <div v-if="loading" class="text-zinc-400 text-sm">Завантаження…</div>
+        <div v-if="loading" class="text-zinc-400 text-sm">Loading…</div>
         <div v-else-if="permissions.length === 0" class="text-zinc-500 text-sm">
-          Дозволів поки немає.
+          No permissions yet.
         </div>
         <Table v-else :items="permissions" key-field="id">
           <template #head>
-            <TableTh>Ключ</TableTh>
-            <TableTh v-if="canUpdate || canDelete" align="end">Дії</TableTh>
+            <TableTh>Key</TableTh>
+            <TableTh v-if="canUpdate || canDelete" align="end">Actions</TableTh>
           </template>
           <template #row="{ item: perm }">
             <TableTd>
@@ -40,10 +40,10 @@
             <TableTd v-if="canUpdate || canDelete" align="end">
               <Dropdown>
                 <DropdownItem :to="{ name: 'permissionEdit', params: { id: perm.id } }">
-                  Редагувати
+                  Edit
                 </DropdownItem>
                 <DropdownItem v-if="canDelete" danger @click="confirmDelete(perm)">
-                  Видалити
+                  Delete
                 </DropdownItem>
               </Dropdown>
             </TableTd>
@@ -54,7 +54,7 @@
 
     <ConfirmDeleteModal v-model="deleteTarget" @confirm="handleDelete">
       <template #message>
-        дозвіл <span class="font-mono">{{ deleteTarget?.key }}</span>
+        permission <span class="font-mono">{{ deleteTarget?.key }}</span>
       </template>
     </ConfirmDeleteModal>
   </div>
@@ -96,7 +96,7 @@ async function load() {
   try {
     await permissionsStore.fetchAll();
   } catch (e: unknown) {
-    showError(e instanceof Error ? e.message : 'Не вдалося завантажити дозволи');
+    showError(e instanceof Error ? e.message : 'Could not load permissions');
   }
 }
 
@@ -114,12 +114,12 @@ function handleDelete() {
     try {
       await permissionsStore.remove(id);
     } catch (e: unknown) {
-      showError(e instanceof Error ? e.message : 'Помилка видалення');
+      showError(e instanceof Error ? e.message : 'Delete failed');
       permissionsStore.restoreAt(removed.item, removed.index);
     }
   }, 5000);
 
-  successWithUndo(`Дозвіл ${key} видалено`, () => {
+  successWithUndo(`Permission ${key} deleted`, () => {
     clearTimeout(timeoutId);
     permissionsStore.restoreAt(removed.item, removed.index);
   });

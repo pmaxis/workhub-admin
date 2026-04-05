@@ -17,7 +17,7 @@ export const useRolesStore = defineStore('roles', () => {
     try {
       list.value = await rolesApi.getAll();
     } catch (e: unknown) {
-      error.value = e instanceof Error ? e.message : 'Не вдалося завантажити ролі';
+      error.value = e instanceof Error ? e.message : 'Could not load roles';
       throw e;
     } finally {
       loading.value = false;

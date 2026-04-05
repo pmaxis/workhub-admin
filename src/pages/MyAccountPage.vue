@@ -3,16 +3,16 @@
     <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <h2 class="text-base font-medium text-zinc-200">Мій акаунт</h2>
+          <h2 class="text-base font-medium text-zinc-200">My account</h2>
           <p class="mt-1 text-sm text-zinc-400">
-            Редагування ПІБ, email та пароля. Роль змінити неможливо.
+            Edit your name, email, and password. Your role cannot be changed here.
           </p>
         </div>
         <button
           v-if="!editing"
           type="button"
           class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
-          title="Редагувати профіль"
+          title="Edit profile"
           @click="startEdit"
         >
           <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -24,7 +24,7 @@
 
       <form v-if="!editing" class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div class="rounded-lg border border-zinc-700 bg-zinc-800/50 px-3 py-2">
-          <p class="text-xs uppercase tracking-wide text-zinc-500">ПІБ</p>
+          <p class="text-xs uppercase tracking-wide text-zinc-500">Full name</p>
           <p class="mt-1 text-sm text-zinc-100">{{ fullName || '—' }}</p>
         </div>
         <div class="rounded-lg border border-zinc-700 bg-zinc-800/50 px-3 py-2">
@@ -36,7 +36,7 @@
       <form v-else class="mt-5 space-y-4" @submit.prevent="submitProfile">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <label class="mb-1 block text-xs uppercase tracking-wide text-zinc-500">Прізвище</label>
+            <label class="mb-1 block text-xs uppercase tracking-wide text-zinc-500">Last name</label>
             <input
               v-model="form.lastName"
               type="text"
@@ -45,7 +45,7 @@
             />
           </div>
           <div>
-            <label class="mb-1 block text-xs uppercase tracking-wide text-zinc-500">Ім'я</label>
+            <label class="mb-1 block text-xs uppercase tracking-wide text-zinc-500">First name</label>
             <input
               v-model="form.firstName"
               type="text"
@@ -54,7 +54,7 @@
             />
           </div>
           <div>
-            <label class="mb-1 block text-xs uppercase tracking-wide text-zinc-500">По батькові</label>
+            <label class="mb-1 block text-xs uppercase tracking-wide text-zinc-500">Middle name</label>
             <input
               v-model="form.thirdName"
               type="text"
@@ -72,24 +72,24 @@
           </div>
           <div class="md:col-span-2">
             <label class="mb-1 block text-xs uppercase tracking-wide text-zinc-500">
-              Новий пароль (залиште порожнім, щоб не змінювати)
+              New password (leave blank to keep current)
             </label>
             <input
               v-model="form.password"
               type="password"
               minlength="8"
               class="w-full rounded-lg border border-zinc-600 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 focus:border-zinc-500 focus:outline-none"
-              placeholder="Мінімум 8 символів"
+              placeholder="At least 8 characters"
             />
           </div>
         </div>
         <p v-if="profileError" class="text-sm text-red-400">{{ profileError }}</p>
         <div class="flex justify-end gap-2">
           <Button type="button" variant="ghost" :disabled="profileSaving" @click="cancelEdit">
-            Скасувати
+            Cancel
           </Button>
           <Button type="submit" variant="secondary" :disabled="profileSaving">
-            {{ profileSaving ? 'Збереження…' : 'Зберегти' }}
+            {{ profileSaving ? 'Saving…' : 'Save' }}
           </Button>
         </div>
       </form>
@@ -97,14 +97,14 @@
 
     <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
       <div class="mb-4 flex items-center justify-between gap-3">
-        <h3 class="text-base font-medium text-zinc-200">Мої сесії</h3>
+        <h3 class="text-base font-medium text-zinc-200">My sessions</h3>
         <button
           type="button"
           class="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:bg-zinc-800 focus:outline-none"
           :disabled="loading"
           @click="loadSessions"
         >
-          {{ loading ? 'Оновлення...' : 'Оновити' }}
+          {{ loading ? 'Refreshing...' : 'Refresh' }}
         </button>
       </div>
 
@@ -112,9 +112,9 @@
         {{ error }}
       </p>
 
-      <div v-if="loading" class="text-sm text-zinc-400">Завантаження сесій...</div>
+      <div v-if="loading" class="text-sm text-zinc-400">Loading sessions...</div>
       <div v-else-if="sessions.length === 0" class="text-sm text-zinc-500">
-        Активні сесії не знайдено.
+        No active sessions found.
       </div>
       <div v-else class="space-y-2">
         <div
@@ -124,9 +124,9 @@
         >
           <div class="flex items-center justify-between gap-3">
             <div class="min-w-0">
-              <p class="truncate text-sm text-zinc-100">{{ session.userAgent || 'Невідомий пристрій' }}</p>
+              <p class="truncate text-sm text-zinc-100">{{ session.userAgent || 'Unknown device' }}</p>
               <p class="mt-1 text-xs text-zinc-400">
-                IP: {{ session.ipAddress || '—' }} | Закінчується: {{ formatDate(session.expiresAt) }}
+                IP: {{ session.ipAddress || '—' }} | Expires: {{ formatDate(session.expiresAt) }}
               </p>
             </div>
             <button
@@ -135,7 +135,7 @@
               :disabled="deletingSessionId === session.id"
               @click="deleteSession(session.id)"
             >
-              {{ deletingSessionId === session.id ? 'Видалення...' : 'Видалити' }}
+              {{ deletingSessionId === session.id ? 'Removing...' : 'Remove' }}
             </button>
           </div>
         </div>
@@ -223,9 +223,9 @@ async function submitProfile() {
     await profileApi.updateProfile(payload);
     await auth.fetchMe();
     editing.value = false;
-    success('Профіль оновлено');
+    success('Profile updated');
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Не вдалося зберегти';
+    const msg = e instanceof Error ? e.message : 'Could not save';
     profileError.value = msg;
     showError(msg);
   } finally {
@@ -243,7 +243,7 @@ function formatDate(value?: string): string {
   if (!value) return '—';
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat('uk-UA', {
+  return new Intl.DateTimeFormat('en-US', {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(date);
@@ -268,7 +268,7 @@ async function loadSessions() {
     const normalized = allRaw.map(normalizeSession);
     sessions.value = normalized.filter((item) => item.userId === auth.user?.id);
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Не вдалося завантажити сесії';
+    const msg = e instanceof Error ? e.message : 'Could not load sessions';
     error.value = msg;
     showError(msg);
     sessions.value = [];
@@ -283,9 +283,9 @@ async function deleteSession(sessionId: string) {
   try {
     await apiClient.delete(`/sessions/${sessionId}`);
     sessions.value = sessions.value.filter((session) => session.id !== sessionId);
-    success('Сесію видалено');
+    success('Session removed');
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Не вдалося видалити сесію';
+    const msg = e instanceof Error ? e.message : 'Could not remove session';
     error.value = msg;
     showError(msg);
   } finally {

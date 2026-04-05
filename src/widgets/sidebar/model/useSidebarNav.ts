@@ -9,7 +9,6 @@ export type NavLink = {
   name: string;
   label: string;
   to: RouteLocationRaw;
-  /** Якщо задано, пункт активний при будь-якому з цих route names */
   routeNames?: string[];
 };
 
@@ -30,28 +29,28 @@ export type NavGroup = {
 export type NavItem = NavLink | NavGroup;
 
 const navStructureRaw: NavItem[] = [
-  { type: 'link', name: 'dashboard', label: 'Головна', to: { name: 'dashboard' } },
+  { type: 'link', name: 'dashboard', label: 'Home', to: { name: 'dashboard' } },
   {
     type: 'link',
     name: 'users',
-    label: 'Користувачі',
+    label: 'Users',
     to: { name: 'users' },
     routeNames: ['users', 'userCreate', 'userEdit'],
   },
   {
     type: 'group',
     id: 'roles-permissions',
-    label: 'Ролі та дозволи',
+    label: 'Roles & permissions',
     children: [
       {
         name: 'roles',
-        label: 'Ролі',
+        label: 'Roles',
         to: { name: 'roles' },
         routeNames: ['roles', 'roleCreate', 'roleEdit'],
       },
       {
         name: 'permissions',
-        label: 'Дозволи',
+        label: 'Permissions',
         to: { name: 'permissions' },
         routeNames: ['permissions', 'permissionCreate', 'permissionEdit'],
       },

@@ -2,7 +2,7 @@
   <div
     class="fixed bottom-4 right-4 z-[9999] flex flex-col gap-3 pointer-events-none"
     aria-live="polite"
-    aria-label="Сповіщення"
+    aria-label="Notifications"
   >
     <div class="flex flex-col gap-3 pointer-events-auto">
       <Toast

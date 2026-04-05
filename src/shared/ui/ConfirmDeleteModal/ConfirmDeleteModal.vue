@@ -6,14 +6,14 @@
   >
     <div class="workhub-confirm-modal w-full max-w-sm rounded-xl border border-zinc-700 bg-zinc-900 p-6 shadow-xl">
       <p class="text-base font-semibold text-zinc-100">
-        Ви дійсно бажаєте видалити <slot name="message" />?
+        Are you sure you want to delete <slot name="message" />?
       </p>
       <p class="mt-2 text-xs text-zinc-500">
-        Цю дію не можна скасувати. Об'єкт буде видалено назавжди.
+        This action cannot be undone. The item will be permanently removed.
       </p>
       <div class="mt-4 flex justify-end gap-2">
         <Button type="button" variant="ghost" size="sm" @click="$emit('update:modelValue', null)">
-          Ні
+          No
         </Button>
         <Button
           type="button"
@@ -22,7 +22,7 @@
           :disabled="loading"
           @click="$emit('confirm')"
         >
-          {{ loading ? '…' : 'Так, видалити' }}
+          {{ loading ? '…' : 'Yes, delete' }}
         </Button>
       </div>
     </div>

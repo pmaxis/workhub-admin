@@ -9,7 +9,7 @@
         placeholder="admin@example.com"
       />
     </FormField>
-    <FormField label="Пароль" field-id="password">
+    <FormField label="Password" field-id="password">
       <Input
         v-model="password"
         type="password"
@@ -20,7 +20,7 @@
     </FormField>
     <ErrorMessage :message="error" />
     <Button type="submit" variant="primary" size="full" :disabled="loading">
-      {{ loading ? 'Вхід...' : 'Увійти' }}
+      {{ loading ? 'Signing in...' : 'Sign in' }}
     </Button>
   </Form>
 </template>
@@ -51,7 +51,7 @@ async function handleSubmit() {
     emit('success');
     await router.replace({ name: 'dashboard' });
   } catch (e) {
-    const msg = e instanceof Error ? e.message : 'Помилка входу';
+    const msg = e instanceof Error ? e.message : 'Sign-in failed';
     error.value = msg;
     showError(msg);
   } finally {

@@ -18,7 +18,7 @@
             ? 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
             : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
         "
-        aria-label="Назад"
+        aria-label="Back"
         @click="$emit('close')"
       >
         <span aria-hidden="true">←</span>

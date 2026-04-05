@@ -6,44 +6,41 @@
         :to="{ name: 'users' }"
         class="mt-2 inline-block text-sm text-amber-400 hover:underline"
       >
-        ← Назад до списку
+        ← Back to list
       </router-link>
     </div>
     <div v-else class="w-full rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
       <div class="mb-4 flex items-center gap-3">
         <router-link :to="{ name: 'users' }" class="text-zinc-400 hover:text-zinc-200 text-sm">
-          ← Користувачі
+          ← Users
         </router-link>
       </div>
       <h2 class="text-base font-medium text-zinc-200 mb-4">
-        {{ isEdit ? 'Редагувати користувача' : 'Новий користувач' }}
+        {{ isEdit ? 'Edit user' : 'New user' }}
       </h2>
 
       <Form v-if="!isEdit || user" bordered @submit="handleSubmit">
-        <!-- Рядок 1: Прізвище, Ім'я, По батькові -->
         <div class="grid grid-cols-3 gap-4">
-          <FormField label="Прізвище" field-id="user-lastName" size="sm">
-            <Input v-model="form.lastName" required placeholder="Прізвище" />
+          <FormField label="Last name" field-id="user-lastName" size="sm">
+            <Input v-model="form.lastName" required placeholder="Last name" />
           </FormField>
-          <FormField label="Імʼя" field-id="user-firstName" size="sm">
-            <Input v-model="form.firstName" required placeholder="Імʼя" />
+          <FormField label="First name" field-id="user-firstName" size="sm">
+            <Input v-model="form.firstName" required placeholder="First name" />
           </FormField>
-          <FormField label="По батькові" field-id="user-thirdName" size="sm">
-            <Input v-model="form.thirdName" placeholder="По батькові" />
+          <FormField label="Middle name" field-id="user-thirdName" size="sm">
+            <Input v-model="form.thirdName" placeholder="Middle name" />
           </FormField>
         </div>
 
-        <!-- Рядок 2: Email -->
         <div>
           <FormField label="Email" field-id="user-email" size="sm">
             <Input v-model="form.email" type="email" required placeholder="user@example.com" />
           </FormField>
         </div>
 
-        <!-- Рядок 3: Пароль, Повторити пароль -->
         <div class="grid grid-cols-2 gap-4">
           <FormField
-            :label="isEdit ? 'Пароль (необовʼязково)' : 'Пароль'"
+            :label="isEdit ? 'Password (optional)' : 'Password'"
             field-id="user-password"
             size="sm"
           >
@@ -51,27 +48,23 @@
               v-model="form.password"
               type="password"
               :required="!isEdit"
-              :placeholder="isEdit ? 'Залиште порожнім, щоб не змінювати' : 'Пароль'"
+              :placeholder="isEdit ? 'Leave blank to keep current' : 'Password'"
             />
             <p v-if="isEdit" class="mt-1 text-xs text-zinc-500">
-              Заповніть лише якщо потрібно змінити пароль.
+              Only fill in if you want to change the password.
             </p>
           </FormField>
-          <FormField
-            :label="isEdit ? 'Повторити пароль' : 'Повторити пароль'"
-            field-id="user-passwordConfirm"
-            size="sm"
-          >
+          <FormField label="Confirm password" field-id="user-passwordConfirm" size="sm">
             <Input
               v-model="form.passwordConfirm"
               type="password"
               :required="!isEdit"
-              :placeholder="isEdit ? 'Підтвердіть новий пароль' : 'Повторити пароль'"
+              :placeholder="isEdit ? 'Confirm new password' : 'Confirm password'"
             />
           </FormField>
         </div>
 
-        <FormField label="Ролі" field-id="user-roles" size="sm">
+        <FormField label="Roles" field-id="user-roles" size="sm">
           <div class="relative" ref="rolesDropdownRef">
             <div
               class="workhub-multiselect-box min-h-10 w-full flex flex-wrap items-center gap-2 rounded-lg border border-zinc-600 bg-zinc-800 px-3 py-2 text-sm text-zinc-100"
@@ -85,7 +78,7 @@
                 <button
                   type="button"
                   class="user-role-chip-remove flex h-5 w-5 shrink-0 items-center justify-center rounded text-inherit opacity-70 hover:opacity-100 hover:bg-amber-500/30 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
-                  aria-label="Прибрати роль"
+                  aria-label="Remove role"
                   @click="toggleRole(r.slug)"
                 >
                   ×
@@ -97,7 +90,7 @@
                 :disabled="rolesAvailableToAdd.length === 0"
                 @click="rolesDropdownOpen = !rolesDropdownOpen"
               >
-                {{ rolesAvailableToAdd.length === 0 ? 'Усі ролі обрані' : '+ Обрати ролі' }}
+                {{ rolesAvailableToAdd.length === 0 ? 'All roles selected' : '+ Add roles' }}
               </button>
             </div>
             <div
@@ -105,7 +98,7 @@
               class="workhub-multiselect-dropdown absolute top-full left-0 z-20 mt-1 max-h-56 w-full min-w-0 overflow-y-auto rounded-lg border border-zinc-600 bg-zinc-800 py-1 shadow-lg"
             >
               <p v-if="rolesStore.roles.length === 0" class="px-3 py-2 text-sm text-zinc-500">
-                Ролей немає.
+                No roles.
               </p>
               <button
                 v-for="r in rolesAvailableToAdd"
@@ -122,13 +115,13 @@
 
         <ErrorMessage :message="error" />
         <template #actions>
-          <Button :to="{ name: 'users' }" variant="ghost">Скасувати</Button>
+          <Button :to="{ name: 'users' }" variant="ghost">Cancel</Button>
           <Button type="submit" variant="secondary" :disabled="submitLoading">
-            {{ submitLoading ? 'Збереження…' : 'Зберегти' }}
+            {{ submitLoading ? 'Saving…' : 'Save' }}
           </Button>
         </template>
       </Form>
-      <div v-else-if="isEdit" class="text-zinc-400 text-sm">Завантаження…</div>
+      <div v-else-if="isEdit" class="text-zinc-400 text-sm">Loading…</div>
     </div>
   </div>
 </template>
@@ -223,7 +216,7 @@ async function load() {
     form.thirdName = user.value.thirdName ?? '';
     assignedRoleSlugs.value = (user.value.roles ?? []).map((r) => r.slug);
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Не вдалося завантажити користувача';
+    const msg = e instanceof Error ? e.message : 'Could not load user';
     loadError.value = msg;
     showError(msg);
   }
@@ -232,15 +225,13 @@ async function load() {
 async function loadRoles() {
   try {
     await rolesStore.fetchAll();
-  } catch {
-    // ignore
-  }
+  } catch {}
 }
 
 async function handleSubmit() {
   const needsPassword = !isEdit.value || form.password;
   if (needsPassword && form.password !== form.passwordConfirm) {
-    error.value = 'Паролі не збігаються';
+    error.value = 'Passwords do not match';
     return;
   }
   submitLoading.value = true;
@@ -281,10 +272,10 @@ async function handleSubmit() {
         await usersStore.addRole(newUser.id, role.id);
       }
     }
-    success(isEdit.value ? 'Користувача оновлено' : 'Користувача створено');
+    success(isEdit.value ? 'User updated' : 'User created');
     router.push({ name: 'users' });
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Помилка збереження';
+    const msg = e instanceof Error ? e.message : 'Save failed';
     error.value = msg;
     showError(msg);
   } finally {

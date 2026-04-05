@@ -29,7 +29,6 @@ export const useAuth = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => !!accessToken.value);
 
-  /** Відновлення сесії з refresh_token cookie */
   async function init() {
     try {
       const { accessToken: token } = await authApi.refresh();

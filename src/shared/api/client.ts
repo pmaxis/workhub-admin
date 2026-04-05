@@ -6,16 +6,12 @@ import axios, {
 } from 'axios';
 import { config } from '@/shared/config/env';
 
-// ─── Types ─────────────────────────────────────────────────────────────────
-
 export type AuthTokenGetter = () => string | null;
 
-/** Розширення конфігу axios: опційний токен для запиту */
 type ApiRequestConfig = AxiosRequestConfig & {
   token?: string | null;
 };
 
-/** Помилка від API з кодом статусу та опційним кодом помилки з тіла */
 export class ApiError extends Error {
   readonly status: number;
   readonly code?: string;
@@ -38,22 +34,16 @@ export class ApiError extends Error {
     return this.status === 403;
   }
 
-  /** Помилка мережі або бекенд недоступний (503). */
   get isServerUnavailable(): boolean {
     return this.status === 0 || this.status === 503;
   }
 }
 
-// ─── Auth ──────────────────────────────────────────────────────────────────
-
 let authGetter: AuthTokenGetter | null = null;
 
-/** Встановити джерело токена для авторизованих запитів (при ініціалізації застосунку). */
 export function setAuthGetter(fn: AuthTokenGetter): void {
   authGetter = fn;
 }
-
-// ─── Axios instance ────────────────────────────────────────────────────────
 
 const http = axios.create({
   baseURL: config.apiRequestBaseUrl,
@@ -61,7 +51,6 @@ const http = axios.create({
   withCredentials: true,
 });
 
-/** Request interceptor: підставляє Bearer токен з опції запиту або з authGetter */
 http.interceptors.request.use((cfg: InternalAxiosRequestConfig & ApiRequestConfig) => {
   const token =
     cfg.token !== undefined && cfg.token !== null ? cfg.token : (authGetter?.() ?? null);
@@ -71,7 +60,6 @@ http.interceptors.request.use((cfg: InternalAxiosRequestConfig & ApiRequestConfi
   return cfg;
 });
 
-/** Response interceptor: перетворює помилки axios на ApiError */
 http.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: unknown) => {
@@ -93,8 +81,6 @@ http.interceptors.response.use(
   },
 );
 
-// ─── Core request ───────────────────────────────────────────────────────────
-
 async function request<T>(path: string, options: ApiRequestConfig = {}): Promise<T> {
   const { token, ...rest } = options;
   const requestConfig: ApiRequestConfig = { ...rest, url: path, token };
@@ -104,8 +90,6 @@ async function request<T>(path: string, options: ApiRequestConfig = {}): Promise
   }
   return res.data as T;
 }
-
-// ─── Public API ─────────────────────────────────────────────────────────────
 
 export const apiClient = {
   get: <T>(path: string, token?: string | null) => request<T>(path, { method: 'GET', token }),
@@ -121,7 +105,6 @@ export const apiClient = {
 
   delete: <T>(path: string, token?: string | null) => request<T>(path, { method: 'DELETE', token }),
 
-  /** POST з withCredentials: true (cookie-based auth). */
   postWithCredentials: <T>(path: string, body?: unknown) =>
     request<T>(path, { method: 'POST', data: body, withCredentials: true }),
 };

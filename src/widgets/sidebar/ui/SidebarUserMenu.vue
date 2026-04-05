@@ -23,7 +23,7 @@
             {{ user.email }}
           </p>
         </div>
-        <Chip :is-light-theme="isLightTheme">Адмін</Chip>
+        <Chip :is-light-theme="isLightTheme">Admin</Chip>
       </div>
 
       <div class="p-2">
@@ -34,7 +34,7 @@
             isLightTheme ? 'text-zinc-600 hover:text-zinc-900' : 'text-zinc-400 hover:text-zinc-100'
           "
         >
-          Мій акаунт
+          My account
         </Link>
       </div>
 
@@ -49,9 +49,9 @@
           "
           @click="$emit('toggle-theme')"
         >
-          <span>Темна тема</span>
+          <span>Dark theme</span>
           <span :class="isLightTheme ? 'text-zinc-500' : 'text-zinc-400'">
-            {{ isDarkMode ? 'Увімк' : 'Вимк' }}
+            {{ isDarkMode ? 'On' : 'Off' }}
           </span>
         </Button>
         <Button
@@ -64,7 +64,7 @@
           "
           @click="$emit('logout')"
         >
-          Вийти
+          Sign out
         </Button>
       </div>
     </div>

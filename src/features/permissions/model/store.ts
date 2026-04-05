@@ -20,7 +20,7 @@ export const usePermissionsStore = defineStore('permissions', () => {
     try {
       list.value = await permissionsApi.getAll();
     } catch (e: unknown) {
-      error.value = e instanceof Error ? e.message : 'Не вдалося завантажити дозволи';
+      error.value = e instanceof Error ? e.message : 'Could not load permissions';
       throw e;
     } finally {
       loading.value = false;

@@ -1,4 +1,3 @@
-/** Ключі дозволів — мають збігатися з бекендом (ability.constants PERMISSIONS). */
 export const PERMISSIONS = {
   MANAGE_ALL: 'manage.all',
 

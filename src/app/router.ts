@@ -105,7 +105,6 @@ router.beforeEach(async (to, _from, next) => {
     next({ name: 'dashboard' });
     return;
   }
-  // Адмінка лише для користувачів з manage.all — інакше розлогінити та показати сповіщення на логіні
   if (isAuth && to.meta.requiresAuth) {
     const { can } = usePermissions();
     if (!can(PERMISSIONS.MANAGE_ALL)) {
@@ -114,7 +113,6 @@ router.beforeEach(async (to, _from, next) => {
       return;
     }
   }
-  // Доступ до розділів за пермішенами
   const name = to.name as string;
   if (isAuth && usersRouteNames.includes(name as (typeof usersRouteNames)[number])) {
     const { can } = usePermissions();

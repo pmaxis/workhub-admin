@@ -2,25 +2,25 @@
   <div class="space-y-6">
     <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
       <div v-if="!canRead" class="text-zinc-500 text-sm">
-        У вас немає доступу до списку ролей.
+        You do not have access to the roles list.
       </div>
       <template v-else>
         <div class="mb-4 flex items-center justify-between">
-          <h2 class="text-base font-medium text-zinc-200">Ролі</h2>
+          <h2 class="text-base font-medium text-zinc-200">Roles</h2>
           <Button v-if="canCreate" :to="{ name: 'roleCreate' }" variant="secondary">
-            Додати роль
+            Add role
           </Button>
         </div>
 
         <ErrorMessage :message="error" class="mb-4" />
 
-        <div v-if="loading" class="text-zinc-400 text-sm">Завантаження…</div>
-        <div v-else-if="roles.length === 0" class="text-zinc-500 text-sm">Ролей поки немає.</div>
+        <div v-if="loading" class="text-zinc-400 text-sm">Loading…</div>
+        <div v-else-if="roles.length === 0" class="text-zinc-500 text-sm">No roles yet.</div>
         <Table v-else :items="roles" key-field="id">
           <template #head>
             <TableTh>Slug</TableTh>
-            <TableTh>Назва</TableTh>
-            <TableTh v-if="canUpdate || canDelete" align="end">Дії</TableTh>
+            <TableTh>Name</TableTh>
+            <TableTh v-if="canUpdate || canDelete" align="end">Actions</TableTh>
           </template>
           <template #row="{ item: role }">
             <TableTd>
@@ -39,10 +39,10 @@
             <TableTd v-if="canUpdate || canDelete" align="end">
               <Dropdown>
                 <DropdownItem :to="{ name: 'roleEdit', params: { id: role.id } }">
-                  Редагувати
+                  Edit
                 </DropdownItem>
                 <DropdownItem v-if="canDelete" danger @click="confirmDelete(role)">
-                  Видалити
+                  Delete
                 </DropdownItem>
               </Dropdown>
             </TableTd>
@@ -53,7 +53,7 @@
 
     <ConfirmDeleteModal v-model="deleteTarget" @confirm="handleDelete">
       <template #message>
-        роль {{ deleteTarget?.name }}
+        role {{ deleteTarget?.name }}
       </template>
     </ConfirmDeleteModal>
   </div>
@@ -95,7 +95,7 @@ async function load() {
   try {
     await rolesStore.fetchAll();
   } catch (e: unknown) {
-    showError(e instanceof Error ? e.message : 'Не вдалося завантажити ролі');
+    showError(e instanceof Error ? e.message : 'Could not load roles');
   }
 }
 
@@ -113,12 +113,12 @@ function handleDelete() {
     try {
       await rolesStore.remove(id);
     } catch (e: unknown) {
-      showError(e instanceof Error ? e.message : 'Помилка видалення');
+      showError(e instanceof Error ? e.message : 'Delete failed');
       rolesStore.restoreAt(removed.item, removed.index);
     }
   }, 5000);
 
-  successWithUndo(`Роль ${name} видалено`, () => {
+  successWithUndo(`Role ${name} deleted`, () => {
     clearTimeout(timeoutId);
     rolesStore.restoreAt(removed.item, removed.index);
   });
