@@ -28,6 +28,11 @@ const router = createRouter({
           component: () => import('@/pages/DashboardPage.vue'),
         },
         {
+          path: 'audit-logs',
+          name: 'auditLogs',
+          component: () => import('@/pages/AuditLogsPage.vue'),
+        },
+        {
           path: 'settings',
           name: 'settings',
           component: () => import('@/pages/SettingsPage.vue'),

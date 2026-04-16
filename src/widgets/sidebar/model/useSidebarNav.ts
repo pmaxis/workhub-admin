@@ -32,6 +32,12 @@ const navStructureRaw: NavItem[] = [
   { type: 'link', name: 'dashboard', label: 'Home', to: { name: 'dashboard' } },
   {
     type: 'link',
+    name: 'auditLogs',
+    label: 'Audit logs',
+    to: { name: 'auditLogs' },
+  },
+  {
+    type: 'link',
     name: 'users',
     label: 'Users',
     to: { name: 'users' },
